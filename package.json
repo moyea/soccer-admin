@@ -15,7 +15,8 @@
     "react-router": "latest",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
-    "moment": "latest"
+    "moment": "latest",
+    "lodash": "latest"
   },
   "scripts": {
     "start": "react-app-rewired start",

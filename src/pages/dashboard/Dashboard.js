@@ -5,15 +5,18 @@ import {
   InputNumber,
   Popconfirm,
   Form,
-  DatePicker
+  DatePicker,
+  Select
 } from 'antd';
 import './dashboard.css';
 import connect from './Dashboard.service';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
-moment.locale('zh-cn')
+import range from 'lodash/range';
 
+moment.locale('zh-cn');
 
+const Option = Select.Option;
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -110,12 +113,14 @@ class Dashboard extends Component {
       {
         title: '比赛时间',
         dataIndex: 'matchTimeStr',
-        editable: false
+        editable: false,
+        width: '11em'
       },
       {
         title: '轮次',
         dataIndex: 'round',
-        editable: false
+        editable: false,
+        width: '3.5em'
       },
       {
         title: '胜率',
@@ -139,6 +144,7 @@ class Dashboard extends Component {
       {
         title: '操作',
         dataIndex: 'oper',
+        width: '8em',
         render: (text, record) => {
           const editable = this.isEditing(record);
           return (
@@ -186,10 +192,6 @@ class Dashboard extends Component {
 
   cancel = () => {
     this.setState({editingKey: ''});
-  };
-
-  dateChange = (date, dateStr) => {
-    this.props.dateChange(date, dateStr);
   };
 
   render() {
@@ -243,10 +245,27 @@ class Dashboard extends Component {
       <div className="dashboard">
         <div className="dashboard-body">
           <div className="d-header">
-            <span>选择比赛日期：</span>
-            <DatePicker locale={locale}
-                        defaultValue={moment()}
-                        onChange={this.props.dateChangeHandler}/>
+            <span>选择联赛:</span>
+            <Select defaultValue="德甲" style={{width: 120, marginRight: '2em', marginLeft: '.5em'}}
+                    onChange={this.props.selectLeague}>
+              <Option value="德甲">德甲</Option>
+              <Option value="意甲">意甲</Option>
+              <Option value="法甲">法甲</Option>
+              <Option value="英超">英超</Option>
+              <Option value="西甲">西甲</Option>
+            </Select>
+            <span>选择轮次:</span>
+            <Select defaultValue={1} style={{width: 100, marginRight: '2em', marginLeft: '.5em'}}
+                    onChange={this.props.selectRound}>
+              {range(1, 38).map(
+                round => <Option value={round} key={round}>第{round}轮</Option>
+              )}
+            </Select>
+            {/*<span>选择比赛日期：</span>*/}
+            {/*<DatePicker locale={locale}*/}
+            {/*defaultValue={moment()}*/}
+            {/*onChange={this.props.dateChangeHandler}/>*/}
+
           </div>
           <Table
             components={components}

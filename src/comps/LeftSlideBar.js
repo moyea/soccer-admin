@@ -15,53 +15,27 @@ class LeftSlideBarComp extends Component {
 
   state = {
     menuList: [
-      {id: 'dashboard', icon: <Icon type="dashboard"/>, path: '/dashboard', label: 'DashBoard', subMenuList: []},
-      {id: 'email', icon: <Icon type="mail"/>, path: '/email', label: 'Email', subMenuList: []},
-      {id: 'profile', icon: <Icon type="user"/>, path: '/profile', label: 'Profile', subMenuList: []},
-      {
-        id: 'search-result',
-        icon: <Icon type="search"/>,
-        path: '/search-result',
-        label: 'Search Results',
-        subMenuList: []
-      },
-      {id: 'faq', icon: <Icon type="question"/>, path: '/faq', label: 'FAQ', subMenuList: []},
-      {
-        id: 'sub-1', icon: <Icon type="folder-add"/>, path: '', label: 'Pages',
-        subMenuList: [
-          {id: 'blank', icon: <Icon type="file"/>, path: '/blank', label: 'Blank Page'},
-          {id: '404', icon: <Icon type="exclamation"/>, path: '/404', label: '404 Error'},
-          {id: '500', icon: <Icon type="close"/>, path: '/500', label: '500 Error'},
-          {id: 'lock', icon: <Icon type="lock"/>, path: '/lock', label: 'Lock Screen'},
-          {id: 'login', icon: <Icon type="check"/>, path: '/login', label: 'Login'},
-          {id: 'register', icon: <Icon type="edit"/>, path: '/register', label: 'Register'},
-          {id: 'reset-pwd', icon: <Icon type="bulb"/>, path: '/reset-pwd', label: 'Password Reset'}
-        ]
-      },
-      {id: 'widgets', icon: <Icon type="filter"/>, path: '/widgets', label: 'Widgets', subMenuList: []},
-      {id: 'forms', icon: <Icon type="form"/>, path: '/forms', label: 'Forms', subMenuList: []},
-      {id: 'charts', icon: <Icon type="pie-chart"/>, path: '/charts', label: 'Charts', subMenuList: []},
-      {id: 'tables', icon: <Icon type="pie-chart"/>, path: '/tables', label: 'Tables', subMenuList: []}
+      {id: 'dashboard', icon: <Icon type="dashboard"/>, path: '/dashboard', label: '比赛记录', subMenuList: []}
+
     ]
   };
 
-
-  // componentWillReceiveProps(nextProps) {
-  // let selectedKeys = [];
-  // this.state.menuList.forEach(item => {
-  //   if (item.path === nextProps.location.pathname) {
-  //     selectedKeys.push(item.id);
-  //   }
-  //   (item.subMenuList || []).forEach(subMenuItem => {
-  //     if (subMenuItem.path === nextProps.location.pathname) {
-  //       selectedKeys.push(subMenuItem.id);
-  //     }
-  //   });
-  // });
-  // this.setState({
-  //   _defaultSelectedKeys: selectedKeys
-  // });
-  // }
+  componentWillReceiveProps(nextProps) {
+    let selectedKeys = [];
+    this.state.menuList.forEach(item => {
+      if (item.path === nextProps.location.pathname) {
+        selectedKeys.push(item.id);
+      }
+      (item.subMenuList || []).forEach(subMenuItem => {
+        if (subMenuItem.path === nextProps.location.pathname) {
+          selectedKeys.push(subMenuItem.id);
+        }
+      });
+    });
+    this.setState({
+      _defaultSelectedKeys: selectedKeys
+    });
+  }
 
   render() {
     const {collapsed, subMenuChange, location} = this.props;

@@ -16,7 +16,7 @@ class HeaderBar extends Component {
       <div className="header-bar">
         <div className="main-logo">
           <Icon type="yuque"/>
-          <span>React Admin</span>
+          <span>数据管理后台</span>
         </div>
         <button className="btn-layout" onClick={() => {
           this.setState({sliderActive: !this.state.sliderActive});
@@ -26,9 +26,9 @@ class HeaderBar extends Component {
         </button>
         <div className="right">
           <ul className="nav">
-            <li className="nav-item"><Link to="/search-result"><Icon type="search"/></Link></li>
-            <li className="nav-item"><Link to="/email"><Icon type="mail"/></Link></li>
-            <li className="nav-item"><Link to="/faq"><Icon type="question"/></Link></li>
+            {/*<li className="nav-item"><Link to="/search-result"><Icon type="search"/></Link></li>*/}
+            {/*<li className="nav-item"><Link to="/email"><Icon type="mail"/></Link></li>*/}
+            {/*<li className="nav-item"><Link to="/faq"><Icon type="question"/></Link></li>*/}
             <li className="nav-item"><Link to="/dashboard"><Icon type="appstore"/></Link></li>
           </ul>
           <div className="main-user">Goff Smith <Avatar src={avatar}/></div>
