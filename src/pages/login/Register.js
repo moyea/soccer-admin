@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './login.css';
-import {Button, Checkbox, Form, Icon, Input} from "antd";
+import {Button, Checkbox, Form, Icon, Input} from 'antd';
 
 class RegisterComp extends Component {
 

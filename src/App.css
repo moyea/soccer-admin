@@ -1,32 +1,58 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+:focus {
+  outline: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+h1, p {
+  margin: 0;
+  padding: 0;
 }
 
-.App-link {
-  color: #61dafb;
+.gb-page-wrapper {
+  height: 100vh;
+  overflow: hidden;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.gb-page-header {
+  flex-basis: 60px;
+  padding: 10px;
+}
+
+.gb-page-body {
+  flex: 1;
+  position: relative;
+}
+
+.ant-layout-header {
+  background-color: #fff;
+  padding-left: 0;
+}
+
+.ant-layout-sider {
+  background-color: #31404e;
+}
+
+.ps .ps__rail-y {
+  width: 6px;
+}
+
+.ps__thumb-y {
+  right: 2px;
+}
+
+.ps__rail-y:hover > .ps__thumb-y, .ps__rail-y:focus > .ps__thumb-y,
+.ps__rail-y.ps--clicking .ps__thumb-y {
+  width: 6px;
+}
+
+.ps .ps__rail-x:hover,
+.ps .ps__rail-y:hover,
+.ps .ps__rail-x:focus,
+.ps .ps__rail-y:focus,
+.ps .ps__rail-x.ps--clicking,
+.ps .ps__rail-y.ps--clicking {
+  background-color: transparent;
 }

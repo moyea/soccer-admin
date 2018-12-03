@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Icon, Avatar} from 'antd';
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 import avatar from '../assets/images/2.png';
 import './header-bar.css';
 
@@ -20,7 +20,7 @@ class HeaderBar extends Component {
         </div>
         <button className="btn-layout" onClick={() => {
           this.setState({sliderActive: !this.state.sliderActive});
-          toggle()
+          toggle();
         }}>
           <i className="iconfont icon-menu"/>
         </button>

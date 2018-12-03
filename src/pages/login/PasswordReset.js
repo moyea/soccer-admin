@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Form, Icon, Input} from "antd";
+import {Button, Form, Icon, Input} from 'antd';
 
 class PasswordResetComp extends Component {
 

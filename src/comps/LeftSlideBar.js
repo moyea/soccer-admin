@@ -41,7 +41,7 @@ class LeftSlideBarComp extends Component {
       {id: 'widgets', icon: <Icon type="filter"/>, path: '/widgets', label: 'Widgets', subMenuList: []},
       {id: 'forms', icon: <Icon type="form"/>, path: '/forms', label: 'Forms', subMenuList: []},
       {id: 'charts', icon: <Icon type="pie-chart"/>, path: '/charts', label: 'Charts', subMenuList: []},
-      {id: 'tables', icon: <Icon type="pie-chart"/>, path: '/tables', label: 'Tables', subMenuList: []},
+      {id: 'tables', icon: <Icon type="pie-chart"/>, path: '/tables', label: 'Tables', subMenuList: []}
     ]
   };
 
