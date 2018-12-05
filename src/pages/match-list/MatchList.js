@@ -5,18 +5,18 @@ import {
   InputNumber,
   Popconfirm,
   Form,
-  // DatePicker,
-  Select
+  DatePicker
+  // Select
 } from 'antd';
-import './dashboard.css';
-import connect from './Dashboard.service';
-// import moment from 'moment';
-// import locale from 'antd/lib/date-picker/locale/zh_CN';
-import range from 'lodash/range';
+import './MatchList.css';
+import connect from './MatchList.service';
+import moment from 'moment';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+// import range from 'lodash/range';
 
-// moment.locale('zh-cn');
+moment.locale('zh-cn');
 
-const Option = Select.Option;
+// const Option = Select.Option;
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -55,10 +55,10 @@ class EditableCell extends React.Component {
               {editing ? (
                 <FormItem style={{margin: 0}}>
                   {getFieldDecorator(dataIndex, {
-                    rules: [{
-                      required: true,
-                      message: `请输入${title}!`
-                    }],
+                    // rules: [{
+                    //   required: true,
+                    //   message: `请输入${title}!`
+                    // }],
                     initialValue: record[dataIndex]
                   })(this.getInput())}
                 </FormItem>
@@ -71,26 +71,38 @@ class EditableCell extends React.Component {
   }
 }
 
-class Dashboard extends Component {
+class MatchList extends Component {
   constructor(props) {
     super(props);
     this.state = {editingKey: ''};
     this.columns = [
       {
-        title: 'ID',
-        dataIndex: 'id',
+        title: '比赛ID',
+        dataIndex: 'matchId',
         editable: false,
         width: '4em'
       },
       {
+        title: '比赛时间',
+        dataIndex: 'matchTime',
+        editable: false,
+        width: '11em'
+      },
+      {
+        title: '联赛',
+        dataIndex: 'leagueName',
+        editable: false,
+        width: '10em'
+      },
+      {
         title: '主队',
-        dataIndex: 'hostTeamName',
+        dataIndex: 'hostName',
         editable: false,
         width: '10em'
       },
       {
         title: '客队',
-        dataIndex: 'awayTeamName',
+        dataIndex: 'awayName',
         editable: false,
         width: '10em'
       },
@@ -104,26 +116,25 @@ class Dashboard extends Component {
           return <span>{hasScore ? `${host}:${away}` : '-'}</span>;
         }
       },
+      // {
+      //   title: '轮次',
+      //   dataIndex: 'round',
+      //   editable: false,
+      //   width: '3.5em'
+      // },
       {
-        title: '联赛',
-        dataIndex: 'leagueName',
-        editable: false,
-        width: '10em'
-      },
-      {
-        title: '比赛时间',
-        dataIndex: 'matchTimeStr',
-        editable: false,
-        width: '11em'
-      },
-      {
-        title: '轮次',
-        dataIndex: 'round',
-        editable: false,
-        width: '3.5em'
+        title: '赔率',
+        // editable: true,
+        children: [
+          {title: '胜', dataIndex: 'winOdds', editable: true},
+          {title: '平', dataIndex: 'drawOdds', editable: true},
+          {title: '负', dataIndex: 'loseOdds', editable: true}
+        ]
       },
       {
         title: '胜率',
+        // dataIndex: 'winRate',
+        // editable: true,
         children: [
           {title: '胜', dataIndex: 'winRate', editable: true},
           {title: '平', dataIndex: 'drawRate', editable: true},
@@ -131,11 +142,23 @@ class Dashboard extends Component {
         ]
       },
       {
-        title: '赔率',
+        title: '实力对比',
+        // dataIndex: 'winRate',
+        // editable: true,
         children: [
-          {title: '胜', dataIndex: 'winOdds', editable: true},
-          {title: '平', dataIndex: 'drawOdds', editable: true},
-          {title: '负', dataIndex: 'loseOdds', editable: true}
+          {title: '胜', dataIndex: 'winStrength', editable: true},
+          {title: '平', dataIndex: 'drawStrength', editable: true},
+          {title: '负', dataIndex: 'loseStrength', editable: true}
+        ]
+      },
+      {
+        title: '综合指数',
+        // dataIndex: 'winRate',
+        // editable: true,
+        children: [
+          {title: '胜', dataIndex: 'winIndex', editable: true},
+          {title: '平', dataIndex: 'drawIndex', editable: true},
+          {title: '负', dataIndex: 'loseIndex', editable: true}
         ]
       },
       {
@@ -242,34 +265,33 @@ class Dashboard extends Component {
       <div className="dashboard">
         <div className="dashboard-body">
           <div className="d-header">
-            <span>选择联赛:</span>
-            <Select defaultValue="德甲" style={{width: 120, marginRight: '2em', marginLeft: '.5em'}}
-                    onChange={this.props.selectLeague}>
-              <Option value="德甲">德甲</Option>
-              <Option value="意甲">意甲</Option>
-              <Option value="法甲">法甲</Option>
-              <Option value="英超">英超</Option>
-              <Option value="西甲">西甲</Option>
-            </Select>
-            <span>选择轮次:</span>
-            <Select defaultValue={1} style={{width: 100, marginRight: '2em', marginLeft: '.5em'}}
-                    onChange={this.props.selectRound}>
-              {range(1, 38).map(
-                round => <Option value={round} key={round}>第{round}轮</Option>
-              )}
-            </Select>
-            {/*<span>选择比赛日期：</span>*/}
-            {/*<DatePicker locale={locale}*/}
-            {/*defaultValue={moment()}*/}
-            {/*onChange={this.props.dateChangeHandler}/>*/}
-
+            {/*<span>选择联赛:</span>*/}
+            {/*<Select defaultValue="德甲" style={{width: 120, marginRight: '2em', marginLeft: '.5em'}}*/}
+            {/*onChange={this.props.selectLeague}>*/}
+            {/*<Option value="德甲">德甲</Option>*/}
+            {/*<Option value="意甲">意甲</Option>*/}
+            {/*<Option value="法甲">法甲</Option>*/}
+            {/*<Option value="英超">英超</Option>*/}
+            {/*<Option value="西甲">西甲</Option>*/}
+            {/*</Select>*/}
+            {/*<span>选择轮次:</span>*/}
+            {/*<Select defaultValue={1} style={{width: 100, marginRight: '2em', marginLeft: '.5em'}}*/}
+            {/*onChange={this.props.selectRound}>*/}
+            {/*{range(1, 38).map(*/}
+            {/*round => <Option value={round} key={round}>第{round}轮</Option>*/}
+            {/*)}*/}
+            {/*</Select>*/}
+            <span>选择比赛日期：</span>
+            <DatePicker locale={locale}
+                        defaultValue={moment()}
+                        onChange={this.props.dateChangeHandler}/>
           </div>
           <Table
             components={components}
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 1200}}
+            scroll={{x: 1600}}
             size="small"
             rowClassName="editable-row"
             rowKey="id"
@@ -280,4 +302,4 @@ class Dashboard extends Component {
   }
 }
 
-export default connect(Dashboard);
+export default connect(MatchList);

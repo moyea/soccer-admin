@@ -15,8 +15,8 @@ class LeftSlideBarComp extends Component {
 
   state = {
     menuList: [
-      {id: 'dashboard', icon: <Icon type="dashboard"/>, path: '/dashboard', label: '比赛记录', subMenuList: []}
-
+      {id: 'dashboard', icon: <Icon type="dashboard"/>, path: '/dashboard', label: '比赛记录', subMenuList: []},
+      {id: 'match-list', icon: <Icon type="dashboard"/>, path: '/match-list', label: '当日比赛记录', subMenuList: []}
     ]
   };
 
