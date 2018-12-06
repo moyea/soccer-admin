@@ -9,46 +9,26 @@ const API = axios.create({
 });
 
 const baseData = {
-  matchId: '',
-  matchTime: '',
+  aicaiBetId: '',
+  matchTimeStr: '',
   leagueName: '',
-  hostName: '',
-  awayName: '',
-  hostScore: '',
-  awayScore: '',
-  winOdds: '',
-  drawOdds: '',
-  loseOdds: '',
-  winRate: '',
-  drawRate: '',
-  loseRate: '',
-  winStrength: '',
-  drawStrength: '',
-  loseStrength: '',
+  hostTeamName: '',
+  awayTeamName: '',
+  // hostScore: '',
+  // awayScore: '',
+  bet365WinOdds: '',
+  bet365DrawOdds: '',
+  bet365LoseOdds: '',
+  bet365WinRate: '',
+  bet365DrawRate: '',
+  bet365LoseRate: '',
+  hostStrength: '',
+  awayStrength: '',
+  strengthDiff: '',
   winIndex: '',
   drawIndex: '',
   loseIndex: ''
 };
-
-// const data = [];
-// for (let i = 0; i < 100; i++) {
-//   data.push({
-//     id: i.toString(),
-//     hostTeamName: `主 ${i}`,
-//     awayTeamName: `客 ${i}`,
-//     hostScore: i * 2,
-//     awayScore: i,
-//     leagueName: '德甲',
-//     matchTimeStr: '2018-11-05 12:30',
-//     round: 14,
-//     winRate: 1.2,
-//     drawRate: 2.4,
-//     loseRate: 3.1,
-//     winOdds: 2,
-//     drawOdds: 3,
-//     loseOdds: 4
-//   });
-// }
 
 export default (WrappedComponent) => {
   class Inner extends Component {
@@ -65,19 +45,19 @@ export default (WrappedComponent) => {
       this.loadData();
     }
 
-    save = (row, id) => {
-      const newData = [...this.state.dataSource];
-      const index = newData.findIndex(item => id === item.id);
-      const item = newData[index];
-      newData.splice(index, 1, {
-        ...item,
-        ...row
-      });
-      API.put('/data', newData[index])
+    save = (dataList) => {
+      // const newData = [...this.state.dataSource];
+      // const index = newData.findIndex(item => id === item.id);
+      // const item = newData[index];
+      // newData.splice(index, 1, {
+      //   ...item,
+      //   ...row
+      // });
+      API.post('/match2/batch', dataList)
         .then(() => {
           this.setState({
-            // isSave: true,
-            dataSource: newData
+            isSave: true,
+            dataSource: dataList
           });
           message.success(`保存成功`);
         })
@@ -111,6 +91,25 @@ export default (WrappedComponent) => {
         .then(res => Object.keys(res).reduce((acc, cur) => acc.concat(res[cur]), []))
         .then(res => res.map(item => Object.assign({}, baseData, item)))
         .then(res => {
+          const promise = Promise.all(res
+            .map(item => item.aicaiBetId)
+            .map(this.getScoreByMatchId)
+          );
+          return Promise.all([
+            Promise.resolve(res),
+            promise
+          ]);
+        })
+        .then(([matchList, oddList]) => {
+          return matchList.map(item => {
+            const oddInfo = oddList.find(oddItem => oddItem.aicaiBetId === item.aicaiBetId);
+            return {
+              ...item,
+              ...oddInfo
+            };
+          });
+        })
+        .then(res => {
           console.log(res);
           this.setState({
             dataSource: res
@@ -121,16 +120,23 @@ export default (WrappedComponent) => {
     getScoreByMatchId(matchId) {
       return API.get(`/data/bet365/${matchId}`)
         .then(res => res.data.data)
+        .then(res => res || {})
         .then(res => ({
-          matchId,
-          ...res
+          aicaiBetId: matchId,
+          bet365WinOdds: (res.firstWinOdds / 10000).toFixed(2),
+          bet365DrawOdds: (res.firstDrowOdds / 10000).toFixed(2),
+          bet365LoseOdds: (res.firstLoseOdds / 10000).toFixed(2),
+          bet365WinRate: (res.firstWinRate / 100).toFixed(2),
+          bet365DrawRate: (res.firstDrowRate / 100).toFixed(2),
+          bet365LoseRate: (res.firstLoseRate / 100).toFixed(2)
         }));
     }
 
     render() {
       return <WrappedComponent
         dataSource={this.state.dataSource}
-        onRowChange={this.save}
+        onSaveClick={this.save}
+        isSave={this.state.isSave}
         dateChangeHandler={this.dateChangeHandler}/>;
     }
   }

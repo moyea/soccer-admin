@@ -4,6 +4,7 @@ import {
   Table,
   InputNumber,
   Popconfirm,
+  Button,
   Form,
   DatePicker
   // Select
@@ -74,17 +75,28 @@ class EditableCell extends React.Component {
 class MatchList extends Component {
   constructor(props) {
     super(props);
-    this.state = {editingKey: ''};
+    this.state = {editingKey: '', forms: []};
+    const _self = this;
     this.columns = [
       {
         title: '比赛ID',
-        dataIndex: 'matchId',
+        dataIndex: 'aicaiBetId',
+        render(text, record) {
+          return <EditableContext.Consumer>
+            {
+              form => {
+                _self.state.forms.push(form);
+                return <span>{text}</span>;
+              }
+            }
+          </EditableContext.Consumer>;
+        },
         editable: false,
-        width: '4em'
+        width: '6em'
       },
       {
         title: '比赛时间',
-        dataIndex: 'matchTime',
+        dataIndex: 'matchTimeStr',
         editable: false,
         width: '11em'
       },
@@ -96,26 +108,26 @@ class MatchList extends Component {
       },
       {
         title: '主队',
-        dataIndex: 'hostName',
+        dataIndex: 'hostTeamName',
         editable: false,
         width: '10em'
       },
       {
         title: '客队',
-        dataIndex: 'awayName',
+        dataIndex: 'awayTeamName',
         editable: false,
         width: '10em'
       },
-      {
-        title: '比分',
-        dataIndex: 'score',
-        width: '6em',
-        render(text, record) {
-          const {hostScore: host, awayScore: away} = record;
-          const hasScore = (host && away) || host === 0 || away === 0;
-          return <span>{hasScore ? `${host}:${away}` : '-'}</span>;
-        }
-      },
+      // {
+      //   title: '比分',
+      //   dataIndex: 'score',
+      //   width: '6em',
+      //   render(text, record) {
+      //     const {hostScore: host, awayScore: away} = record;
+      //     const hasScore = (host && away) || host === 0 || away === 0;
+      //     return <span>{hasScore ? `${host}:${away}` : '-'}</span>;
+      //   }
+      // },
       // {
       //   title: '轮次',
       //   dataIndex: 'round',
@@ -126,9 +138,9 @@ class MatchList extends Component {
         title: '赔率',
         // editable: true,
         children: [
-          {title: '胜', dataIndex: 'winOdds', editable: true},
-          {title: '平', dataIndex: 'drawOdds', editable: true},
-          {title: '负', dataIndex: 'loseOdds', editable: true}
+          {title: '胜', width: '4.2em', dataIndex: 'bet365WinOdds', editable: false},
+          {title: '平', width: '4.2em', dataIndex: 'bet365DrawOdds', editable: false},
+          {title: '负', width: '4.2em', dataIndex: 'bet365LoseOdds', editable: false}
         ]
       },
       {
@@ -136,78 +148,80 @@ class MatchList extends Component {
         // dataIndex: 'winRate',
         // editable: true,
         children: [
-          {title: '胜', dataIndex: 'winRate', editable: true},
-          {title: '平', dataIndex: 'drawRate', editable: true},
-          {title: '负', dataIndex: 'loseRate', editable: true}
+          {title: '胜', width: '4.2em', dataIndex: 'bet365WinRate', editable: false},
+          {title: '平', width: '4.2em', dataIndex: 'bet365DrawRate', editable: false},
+          {title: '负', width: '4.2em', dataIndex: 'bet365LoseRate', editable: false}
         ]
       },
-      {
-        title: '实力对比',
-        // dataIndex: 'winRate',
-        // editable: true,
-        children: [
-          {title: '胜', dataIndex: 'winStrength', editable: true},
-          {title: '平', dataIndex: 'drawStrength', editable: true},
-          {title: '负', dataIndex: 'loseStrength', editable: true}
-        ]
-      },
-      {
-        title: '综合指数',
-        // dataIndex: 'winRate',
-        // editable: true,
-        children: [
-          {title: '胜', dataIndex: 'winIndex', editable: true},
-          {title: '平', dataIndex: 'drawIndex', editable: true},
-          {title: '负', dataIndex: 'loseIndex', editable: true}
-        ]
-      },
-      {
-        title: '操作',
-        dataIndex: 'oper',
-        width: '8em',
-        render: (text, record) => {
-          const editable = this.isEditing(record);
-          return (
-            <div>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <button
-                        onClick={() => this.save(form, record.id)}
-                        style={{marginRight: 8}}>保存</button>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.key)}>
-                    <button>取消</button>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <button onClick={() => this.edit(record.id)}>编辑</button>
-              )}
-            </div>
-          );
-        }
-      }
+
+      {title: '主队实力', dataIndex: 'hostStrength', editable: true},
+      {title: '客队实力', dataIndex: 'awayStrength', editable: true},
+      {title: '实力差值', dataIndex: 'strengthDiff', editable: true},
+      {title: '当前表现', dataIndex: 'teamStatus', editable: true},
+      {title: '近期表现', dataIndex: 'pastStatus', editable: true}
+      // {
+      //   title: '操作',
+      //   dataIndex: 'oper',
+      //   width: '8em',
+      //   render: (text, record) => {
+      //     const editable = this.isEditing(record);
+      //     return (
+      //       <div>
+      //         {editable ? (
+      //           <span>
+      //             <EditableContext.Consumer>
+      //               {form => (
+      //                 <button
+      //                   onClick={() => this.save(form, record.id)}
+      //                   style={{marginRight: 8}}>保存</button>
+      //               )}
+      //             </EditableContext.Consumer>
+      //             <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.key)}>
+      //               <button>取消</button>
+      //             </Popconfirm>
+      //           </span>
+      //         ) : (
+      //           <button onClick={() => this.edit(record.id)}>编辑</button>
+      //         )}
+      //       </div>
+      //     );
+      //   }
+      // }
     ];
   }
 
   isEditing = (record) => {
-    return record.id === this.state.editingKey;
+    return !this.props.isSave;
+    // return record.id === this.state.editingKey;
   };
 
   edit(id) {
     this.setState({editingKey: id});
   }
 
-  save(form, id) {
-    form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
-      this.props.onRowChange(row, id);
-      this.setState({editingKey: ''});
+  save() {
+    const {dataSource, onSaveClick} = this.props;
+    const promises = this.state.forms.map(form => {
+      return new Promise((resolve, reject) => {
+        form.validateFields((error, row) => {
+          if (error) {
+            return reject(error);
+          }
+          return resolve(row);
+        });
+      });
     });
+    Promise.all(promises)
+      .then(formData => {
+        return dataSource.map((item, idx) => ({
+          ...item,
+          ...formData[idx]
+        }));
+      })
+      .then(res => {
+        onSaveClick(res);
+      });
+
   }
 
   cancel = () => {
@@ -291,11 +305,13 @@ class MatchList extends Component {
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 1600}}
+            scroll={{x: 1400}}
             size="small"
+            pagination={false}
             rowClassName="editable-row"
             rowKey="id"
           />
+          <Button type="primary" onClick={() => this.save()}>保存</Button>
         </div>
       </div>
     );
