@@ -11,6 +11,7 @@ const API = axios.create({
 const baseData = {
   aicaiBetId: '',
   matchTimeStr: '',
+  logicalMatchTime: '',
   leagueName: '',
   hostTeamName: '',
   awayTeamName: '',
@@ -110,7 +111,6 @@ export default (WrappedComponent) => {
           });
         })
         .then(res => {
-          console.log(res);
           this.setState({
             dataSource: res
           });

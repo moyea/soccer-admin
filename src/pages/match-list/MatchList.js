@@ -100,6 +100,12 @@ class MatchList extends Component {
         editable: false,
         width: '11em'
       },
+      // {
+      //   title: '逻辑比赛时间',
+      //   dataIndex: 'logicalMatchTime',
+      //   editable: false,
+      //   width: '11em'
+      // },
       {
         title: '联赛',
         dataIndex: 'leagueName',
@@ -309,7 +315,7 @@ class MatchList extends Component {
             size="small"
             pagination={false}
             rowClassName="editable-row"
-            rowKey="id"
+            rowKey="aicaiBetId"
           />
           <Button type="primary" onClick={() => this.save()}>保存</Button>
         </div>
