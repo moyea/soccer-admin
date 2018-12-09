@@ -21,6 +21,15 @@
   background-color: #fff;
 }
 
+
+.ant-form-item-control{
+  line-height: 28px;
+}
+.ant-input {
+  padding: 4px 5px;
+  height: 28px;
+}
+
 .ant-row {
   margin-bottom: 20px;
 }

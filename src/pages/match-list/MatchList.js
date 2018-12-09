@@ -98,14 +98,14 @@ class MatchList extends Component {
         title: '比赛时间',
         dataIndex: 'matchTimeStr',
         editable: false,
-        width: '11em'
+        width: '8em'
       },
-      // {
-      //   title: '逻辑比赛时间',
-      //   dataIndex: 'logicalMatchTime',
-      //   editable: false,
-      //   width: '11em'
-      // },
+      {
+        title: '逻辑比赛时间',
+        dataIndex: 'logicalMatchTime',
+        editable: false,
+        width: '9em'
+      },
       {
         title: '联赛',
         dataIndex: 'leagueName',
@@ -124,6 +124,18 @@ class MatchList extends Component {
         editable: false,
         width: '10em'
       },
+      {
+        title: '主队得分',
+        dataIndex: 'hostTeamScore',
+        editable: true,
+        width: '6em'
+      },
+      {
+        title: '客队得分',
+        dataIndex: 'awayTeamScore',
+        editable: true,
+        width: '6em'
+      },
       // {
       //   title: '比分',
       //   dataIndex: 'score',
@@ -141,7 +153,7 @@ class MatchList extends Component {
       //   width: '3.5em'
       // },
       {
-        title: '赔率',
+        title: '欧洲赔率',
         // editable: true,
         children: [
           {title: '胜', width: '4.2em', dataIndex: 'bet365WinOdds', editable: false},
@@ -150,7 +162,7 @@ class MatchList extends Component {
         ]
       },
       {
-        title: '胜率',
+        title: '欧洲胜率',
         // dataIndex: 'winRate',
         // editable: true,
         children: [
@@ -159,12 +171,29 @@ class MatchList extends Component {
           {title: '负', width: '4.2em', dataIndex: 'bet365LoseRate', editable: false}
         ]
       },
-
-      {title: '主队实力', dataIndex: 'hostStrength', editable: true},
-      {title: '客队实力', dataIndex: 'awayStrength', editable: true},
-      {title: '实力差值', dataIndex: 'strengthDiff', editable: true},
-      {title: '当前表现', dataIndex: 'teamStatus', editable: true},
-      {title: '近期表现', dataIndex: 'pastStatus', editable: true}
+      {
+        title: '理论赔率',
+        // editable: true,
+        children: [
+          {title: '胜', width: '4.2em', dataIndex: 'theoreticalWinOdds', editable: true},
+          {title: '平', width: '4.2em', dataIndex: 'theoreticalDrawOdds', editable: true},
+          {title: '负', width: '4.2em', dataIndex: 'theoreticalLoseOdds', editable: true}
+        ]
+      },
+      {
+        title: '理论胜率',
+        // editable: true,
+        children: [
+          {title: '胜', width: '4.2em', dataIndex: 'theoreticalWinRate', editable: true},
+          {title: '平', width: '4.2em', dataIndex: 'theoreticalDrawRate', editable: true},
+          {title: '负', width: '4.2em', dataIndex: 'theoreticalLoseRate', editable: true}
+        ]
+      },
+      {title: '主队实力', width: '6em', dataIndex: 'hostStrength', editable: true},
+      {title: '客队实力', width: '6em', dataIndex: 'awayStrength', editable: true},
+      {title: '实力差值', width: '6em', dataIndex: 'strengthDiff', editable: true},
+      {title: '本场表现', width: '6em', dataIndex: 'teamStatus', editable: true},
+      {title: '近期表现', width: '6em', dataIndex: 'pastStatus', editable: true}
       // {
       //   title: '操作',
       //   dataIndex: 'oper',
@@ -197,7 +226,9 @@ class MatchList extends Component {
   }
 
   isEditing = (record) => {
-    return !this.props.isSave;
+    const {isHistory, isSave} = this.props;
+
+    return !isHistory && !isSave;
     // return record.id === this.state.editingKey;
   };
 
@@ -311,7 +342,7 @@ class MatchList extends Component {
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 1400}}
+            scroll={{x: 2000}}
             size="small"
             pagination={false}
             rowClassName="editable-row"
