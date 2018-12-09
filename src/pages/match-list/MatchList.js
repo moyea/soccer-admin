@@ -92,49 +92,49 @@ class MatchList extends Component {
           </EditableContext.Consumer>;
         },
         editable: false,
-        width: '6em'
+        width: '5em'
       },
       {
         title: '比赛时间',
         dataIndex: 'matchTimeStr',
         editable: false,
-        width: '8em'
+        width: '6.5em'
       },
       {
         title: '逻辑比赛时间',
         dataIndex: 'logicalMatchTime',
         editable: false,
-        width: '9em'
+        width: '7em'
       },
       {
         title: '联赛',
         dataIndex: 'leagueName',
         editable: false,
-        width: '10em'
+        width: '3em'
       },
       {
         title: '主队',
         dataIndex: 'hostTeamName',
         editable: false,
-        width: '10em'
+        width: '8em'
       },
       {
         title: '客队',
         dataIndex: 'awayTeamName',
         editable: false,
-        width: '10em'
+        width: '8em'
       },
       {
         title: '主队得分',
         dataIndex: 'hostTeamScore',
         editable: true,
-        width: '6em'
+        width: '4.5em'
       },
       {
         title: '客队得分',
         dataIndex: 'awayTeamScore',
         editable: true,
-        width: '6em'
+        width: '4.5em'
       },
       // {
       //   title: '比分',
@@ -156,9 +156,9 @@ class MatchList extends Component {
         title: '欧洲赔率',
         // editable: true,
         children: [
-          {title: '胜', width: '4.2em', dataIndex: 'bet365WinOdds', editable: false},
-          {title: '平', width: '4.2em', dataIndex: 'bet365DrawOdds', editable: false},
-          {title: '负', width: '4.2em', dataIndex: 'bet365LoseOdds', editable: false}
+          {title: '胜', width: '3.2em', dataIndex: 'bet365WinOdds', editable: false},
+          {title: '平', width: '3.2em', dataIndex: 'bet365DrawOdds', editable: false},
+          {title: '负', width: '3.2em', dataIndex: 'bet365LoseOdds', editable: false}
         ]
       },
       {
@@ -166,34 +166,34 @@ class MatchList extends Component {
         // dataIndex: 'winRate',
         // editable: true,
         children: [
-          {title: '胜', width: '4.2em', dataIndex: 'bet365WinRate', editable: false},
-          {title: '平', width: '4.2em', dataIndex: 'bet365DrawRate', editable: false},
-          {title: '负', width: '4.2em', dataIndex: 'bet365LoseRate', editable: false}
+          {title: '胜', width: '3.2em', dataIndex: 'bet365WinRate', editable: false},
+          {title: '平', width: '3.2em', dataIndex: 'bet365DrawRate', editable: false},
+          {title: '负', width: '3.2em', dataIndex: 'bet365LoseRate', editable: false}
         ]
       },
       {
         title: '理论赔率',
         // editable: true,
         children: [
-          {title: '胜', width: '4.2em', dataIndex: 'theoreticalWinOdds', editable: true},
-          {title: '平', width: '4.2em', dataIndex: 'theoreticalDrawOdds', editable: true},
-          {title: '负', width: '4.2em', dataIndex: 'theoreticalLoseOdds', editable: true}
+          {title: '胜', width: '3.2em', dataIndex: 'theoreticalWinOdds', editable: true},
+          {title: '平', width: '3.2em', dataIndex: 'theoreticalDrawOdds', editable: true},
+          {title: '负', width: '3.2em', dataIndex: 'theoreticalLoseOdds', editable: true}
         ]
       },
       {
         title: '理论胜率',
         // editable: true,
         children: [
-          {title: '胜', width: '4.2em', dataIndex: 'theoreticalWinRate', editable: true},
-          {title: '平', width: '4.2em', dataIndex: 'theoreticalDrawRate', editable: true},
-          {title: '负', width: '4.2em', dataIndex: 'theoreticalLoseRate', editable: true}
+          {title: '胜', width: '3.2em', dataIndex: 'theoreticalWinRate', editable: true},
+          {title: '平', width: '3.2em', dataIndex: 'theoreticalDrawRate', editable: true},
+          {title: '负', width: '3.2em', dataIndex: 'theoreticalLoseRate', editable: true}
         ]
       },
-      {title: '主队实力', width: '6em', dataIndex: 'hostStrength', editable: true},
-      {title: '客队实力', width: '6em', dataIndex: 'awayStrength', editable: true},
-      {title: '实力差值', width: '6em', dataIndex: 'strengthDiff', editable: true},
-      {title: '本场表现', width: '6em', dataIndex: 'teamStatus', editable: true},
-      {title: '近期表现', width: '6em', dataIndex: 'pastStatus', editable: true}
+      {title: '主队实力', width: '4.5em', dataIndex: 'hostStrength', editable: true},
+      {title: '客队实力', width: '4.5em', dataIndex: 'awayStrength', editable: true},
+      {title: '实力差值', width: '4.5em', dataIndex: 'strengthDiff', editable: true},
+      {title: '本场表现', width: '4.5em', dataIndex: 'teamStatus', editable: true},
+      {title: '近期表现', width: '4.5em', dataIndex: 'pastStatus', editable: true}
       // {
       //   title: '操作',
       //   dataIndex: 'oper',
@@ -342,7 +342,7 @@ class MatchList extends Component {
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 2000}}
+            scroll={{x: 1800}}
             size="small"
             pagination={false}
             rowClassName="editable-row"

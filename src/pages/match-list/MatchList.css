@@ -21,10 +21,14 @@
   background-color: #fff;
 }
 
+.ant-table-small {
+  font-size: 12px;
+}
 
-.ant-form-item-control{
+.ant-form-item-control {
   line-height: 28px;
 }
+
 .ant-input {
   padding: 4px 5px;
   height: 28px;
