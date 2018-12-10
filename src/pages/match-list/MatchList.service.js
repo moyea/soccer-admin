@@ -81,7 +81,9 @@ const baseData = {
   theoreticalLoseOdds: '',
   theoreticalWinRate: '',
   theoreticalDrawRate: '',
-  theoreticalLoseRate: ''
+  theoreticalLoseRate: '',
+  hostScore: '',
+  awayScore: ''
 };
 
 export default (WrappedComponent) => {
@@ -96,33 +98,28 @@ export default (WrappedComponent) => {
 
 
     componentWillMount() {
-      // const {selectLeague, selectRound} = this.state;
       this.loadData();
     }
 
     save = (dataList) => {
-      // const newData = [...this.state.dataSource];
-      // const index = newData.findIndex(item => id === item.id);
-      // const item = newData[index];
-      // newData.splice(index, 1, {
-      //   ...item,
-      //   ...row
-      // });
       const getValidFloat = (n) => n ? parseFloat(n) : '';
       const getValidInt = (n) => n ? parseInt(n) : '';
       const newData = dataList.map(item => ({
         ...item,
         hostScore: getValidInt(item.hostScore),
         awayScore: getValidInt(item.awayScore),
-        hostStrength: '',
-        awayStrength: '',
-        strengthDiff: '',
+        hostStrength: getValidInt(item.hostStrength),
+        awayStrength: getValidInt(item.awayStrength),
+        strengthDiff: getValidInt(item.strengthDiff),
+        teamStatus: getValidInt(item.teamStatus),
+        pastStatus: getValidInt(item.pastStatus),
         theoreticalWinOdds: getValidFloat(item.theoreticalWinOdds),
         theoreticalDrawOdds: getValidFloat(item.theoreticalDrawOdds),
         theoreticalLoseOdds: getValidFloat(item.theoreticalLoseOdds),
         theoreticalWinRate: getValidFloat(item.theoreticalWinRate),
         theoreticalDrawRate: getValidFloat(item.theoreticalDrawRate),
         theoreticalLoseRate: getValidFloat(item.theoreticalLoseRate)
+
       }));
       API.post('/match2/batch', newData)
         .then(() => {

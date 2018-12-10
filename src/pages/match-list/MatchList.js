@@ -92,19 +92,19 @@ class MatchList extends Component {
           </EditableContext.Consumer>;
         },
         editable: false,
-        width: '5em'
+        width: '4.3em'
       },
       {
         title: '比赛时间',
         dataIndex: 'matchTimeStr',
         editable: false,
-        width: '6.5em'
+        width: '5.6em'
       },
       {
         title: '逻辑比赛时间',
         dataIndex: 'logicalMatchTime',
         editable: false,
-        width: '7em'
+        width: '5.8em'
       },
       {
         title: '联赛',
@@ -116,45 +116,24 @@ class MatchList extends Component {
         title: '主队',
         dataIndex: 'hostTeamName',
         editable: false,
-        width: '8em'
+        width: '6em'
       },
       {
         title: '客队',
         dataIndex: 'awayTeamName',
         editable: false,
-        width: '8em'
+        width: '6em'
       },
       {
-        title: '主队得分',
-        dataIndex: 'hostTeamScore',
-        editable: true,
-        width: '4.5em'
+        title: '比分',
+        // editable: true,
+        children: [
+          {title: '主', width: '3.2em', dataIndex: 'hostScore', editable: true},
+          {title: '客', width: '3.2em', dataIndex: 'awayScore', editable: true}
+        ]
       },
-      {
-        title: '客队得分',
-        dataIndex: 'awayTeamScore',
-        editable: true,
-        width: '4.5em'
-      },
-      // {
-      //   title: '比分',
-      //   dataIndex: 'score',
-      //   width: '6em',
-      //   render(text, record) {
-      //     const {hostScore: host, awayScore: away} = record;
-      //     const hasScore = (host && away) || host === 0 || away === 0;
-      //     return <span>{hasScore ? `${host}:${away}` : '-'}</span>;
-      //   }
-      // },
-      // {
-      //   title: '轮次',
-      //   dataIndex: 'round',
-      //   editable: false,
-      //   width: '3.5em'
-      // },
       {
         title: '欧洲赔率',
-        // editable: true,
         children: [
           {title: '胜', width: '3.2em', dataIndex: 'bet365WinOdds', editable: false},
           {title: '平', width: '3.2em', dataIndex: 'bet365DrawOdds', editable: false},
@@ -163,8 +142,6 @@ class MatchList extends Component {
       },
       {
         title: '欧洲胜率',
-        // dataIndex: 'winRate',
-        // editable: true,
         children: [
           {title: '胜', width: '3.2em', dataIndex: 'bet365WinRate', editable: false},
           {title: '平', width: '3.2em', dataIndex: 'bet365DrawRate', editable: false},
@@ -173,7 +150,6 @@ class MatchList extends Component {
       },
       {
         title: '理论赔率',
-        // editable: true,
         children: [
           {title: '胜', width: '3.2em', dataIndex: 'theoreticalWinOdds', editable: true},
           {title: '平', width: '3.2em', dataIndex: 'theoreticalDrawOdds', editable: true},
@@ -182,7 +158,6 @@ class MatchList extends Component {
       },
       {
         title: '理论胜率',
-        // editable: true,
         children: [
           {title: '胜', width: '3.2em', dataIndex: 'theoreticalWinRate', editable: true},
           {title: '平', width: '3.2em', dataIndex: 'theoreticalDrawRate', editable: true},
@@ -342,13 +317,13 @@ class MatchList extends Component {
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 1800}}
+            scroll={{x: 1700}}
             size="small"
             pagination={false}
             rowClassName="editable-row"
             rowKey="aicaiBetId"
           />
-          <Button type="primary" onClick={() => this.save()}>保存</Button>
+          <Button className="btn-save" type="primary" onClick={() => this.save()}>保存</Button>
         </div>
       </div>
     );
