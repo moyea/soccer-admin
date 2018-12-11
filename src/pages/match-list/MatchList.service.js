@@ -134,7 +134,7 @@ export default (WrappedComponent) => {
         });
     };
 
-    dateChangeHandler = (date, dateStr) => {
+    dateChangeHandler = (dateStr) => {
       this.loadHistoryData(dateStr);
     };
 

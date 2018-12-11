@@ -3,17 +3,87 @@ import {
   Input,
   Table,
   InputNumber,
-  Popconfirm,
+  // Popconfirm,
   Button,
   Form,
-  DatePicker
+  DatePicker,
+  message
   // Select
 } from 'antd';
 import './MatchList.css';
 import connect from './MatchList.service';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
-// import range from 'lodash/range';
+
+const ExcelJS = require('exceljs/dist/es5/exceljs.browser');
+const FileSaver = require('file-saver');
+const workbook = new ExcelJS.Workbook();
+const sheet = workbook.addWorksheet('Sheet1');
+const cellIndexs = 'ABCDEFUVWXY';
+const alignment = {vertical: 'middle', horizontal: 'center'};
+cellIndexs.split('').forEach((value, idx) => {
+  sheet.mergeCells(`${value}1:${value}2`);
+  // sheet.getCell(`${value}2`).alignment = alignment;
+});
+
+const columnMapping = {
+  'A2': '比赛ID',
+  'B2': '比赛时间',
+  'C2': '逻辑比赛时间',
+  'D2': '联赛',
+  'E2': '主队',
+  'F2': '客队',
+  'U2': '主队实力',
+  'V2': '客队实力',
+  'W2': '实力差值',
+  'X2': '本场表现',
+  'Y2': '近期表现'
+};
+
+Object.keys(columnMapping).forEach(k => {
+  const cell = sheet.getCell(k);
+  cell.value = columnMapping[k];
+  // cell.alignment = alignment;
+});
+//
+// sheet.getCell('A2').value = '比赛ID';
+// sheet.getCell('B2').value = '比赛时间';
+// sheet.getCell('C2').value = '逻辑比赛时间';
+// sheet.getCell('D2').value = '联赛';
+// sheet.getCell('E2').value = '主队';
+// sheet.getCell('F2').value = '客队';
+// sheet.getCell('U2').value = '主队实力';
+// sheet.getCell('V2').value = '客队实力';
+// sheet.getCell('W2').value = '实力差值';
+// sheet.getCell('X2').value = '本场表现';
+// sheet.getCell('Y2').value = '近期表现';
+
+
+sheet.mergeCells('G1:H1');
+sheet.getCell('H1').value = '比分';
+sheet.getCell('G2').value = '主';
+sheet.getCell('H2').value = '客';
+sheet.mergeCells('I1:K1');
+sheet.getCell('K1').value = '欧洲赔率';
+sheet.getCell('I2').value = '胜';
+sheet.getCell('J2').value = '平';
+sheet.getCell('K2').value = '负';
+sheet.mergeCells('L1:N1');
+sheet.getCell('N1').value = '欧洲胜率';
+sheet.getCell('L2').value = '胜';
+sheet.getCell('M2').value = '平';
+sheet.getCell('N2').value = '负';
+sheet.mergeCells('O1:Q1');
+sheet.getCell('Q1').value = '理论赔率';
+sheet.getCell('O2').value = '胜';
+sheet.getCell('P2').value = '平';
+sheet.getCell('Q2').value = '负';
+sheet.mergeCells('R1:T1');
+sheet.getCell('T1').value = '理论胜率';
+sheet.getCell('R2').value = '胜';
+sheet.getCell('S2').value = '平';
+sheet.getCell('T2').value = '负';
+
 
 moment.locale('zh-cn');
 
@@ -75,7 +145,7 @@ class EditableCell extends React.Component {
 class MatchList extends Component {
   constructor(props) {
     super(props);
-    this.state = {editingKey: '', forms: []};
+    this.state = {editingKey: '', forms: [], dateStr: moment().format('YYYY-MM-DD')};
     const _self = this;
     this.columns = [
       {
@@ -202,7 +272,6 @@ class MatchList extends Component {
 
   isEditing = (record) => {
     const {isHistory, isSave} = this.props;
-
     return !isHistory && !isSave;
     // return record.id === this.state.editingKey;
   };
@@ -236,8 +305,76 @@ class MatchList extends Component {
 
   }
 
+  exportToExcel = () => {
+    this.setState({
+      isExporting: true
+    });
+    const {dataSource} = this.props;
+    dataSource.forEach(item => {
+      const row = sheet.addRow([
+        item.aicaiBetId,
+        item.matchTimeStr,
+        item.logicalMatchTime,
+        item.leagueName,
+        item.hostTeamName,
+        item.awayTeamName,
+        item.hostScore,
+        item.awayScore,
+        item.bet365WinOdds,
+        item.bet365DrawOdds,
+        item.bet365LoseOdds,
+        item.bet365WinRate,
+        item.bet365DrawRate,
+        item.bet365LoseRate,
+        item.theoreticalWinOdds,
+        item.theoreticalDrawOdds,
+        item.theoreticalLoseOdds,
+        item.theoreticalWinRate,
+        item.theoreticalDrawRate,
+        item.theoreticalLoseRate,
+        item.hostStrength,
+        item.awayStrength,
+        item.strengthDiff,
+        item.teamStatus,
+        item.pastStatus
+      ]);
+      row.commit();
+    });
+    sheet.eachRow(row => {
+      row.eachCell(cell => {
+        cell.alignment = alignment;
+      });
+    });
+    const filename = `${this.state.dateStr}比赛记录.xlsx`;
+
+    workbook.xlsx
+      .writeBuffer()
+      .then(buffer => new File([buffer], filename, {type: 'application/octet-stream'}))
+      .then(file => {
+        message.success(`导出成功`);
+        this.setState({
+          // isExportSuccess: true,
+          isExporting: false
+        });
+        FileSaver.saveAs(file);
+      })
+      .catch(err => {
+        message.error(`导出失败`);
+        this.setState({
+          // isExportSuccess: false,
+          isExporting: false
+        });
+      })
+    ;
+  };
+
   cancel = () => {
     this.setState({editingKey: ''});
+  };
+
+  dateChangeHandler = (date, dateStr) => {
+    this.setState({dateStr});
+    this.props.dateChangeHandler(dateStr);
   };
 
   render() {
@@ -310,7 +447,7 @@ class MatchList extends Component {
             <span>选择比赛日期：</span>
             <DatePicker locale={locale}
                         defaultValue={moment()}
-                        onChange={this.props.dateChangeHandler}/>
+                        onChange={this.dateChangeHandler}/>
           </div>
           <Table
             components={components}
@@ -324,6 +461,7 @@ class MatchList extends Component {
             rowKey="aicaiBetId"
           />
           <Button className="btn-save" type="primary" onClick={() => this.save()}>保存</Button>
+          <Button className="btn-export" type="primary" onClick={() => this.exportToExcel()}>导出到excel</Button>
         </div>
       </div>
     );

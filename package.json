@@ -6,7 +6,11 @@
     "antd": "^3.10.9",
     "axios": "^0.18.0",
     "babel-plugin-import": "^1.11.0",
+    "exceljs": "^1.6.3",
+    "js-export-excel-react": "^1.0.10",
+    "lodash": "latest",
     "lodash.max": "^4.0.1",
+    "moment": "latest",
     "prop-types": "latest",
     "react": "^16.6.3",
     "react-app-rewired": "^1.6.2",
@@ -15,8 +19,7 @@
     "react-router": "latest",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
-    "moment": "latest",
-    "lodash": "latest"
+    "file-saver": "latest"
   },
   "scripts": {
     "start": "react-app-rewired start",
