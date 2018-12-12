@@ -3,7 +3,7 @@ import {
   Input,
   Table,
   InputNumber,
-  // Popconfirm,
+  Popconfirm,
   Button,
   Form,
   DatePicker,
@@ -11,7 +11,7 @@ import {
   // Select
 } from 'antd';
 import './MatchList.css';
-import connect from './MatchList.service';
+import connect from './MatchHistoryList.service';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 
@@ -142,7 +142,7 @@ class EditableCell extends React.Component {
   }
 }
 
-class MatchList extends Component {
+class MatchHistoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {editingKey: '', forms: [], dateStr: moment().format('YYYY-MM-DD')};
@@ -238,41 +238,60 @@ class MatchList extends Component {
       {title: '客队实力', width: '4.5em', dataIndex: 'awayStrength', editable: true},
       {title: '实力差值', width: '4.5em', dataIndex: 'strengthDiff', editable: true},
       {title: '本场表现', width: '4.5em', dataIndex: 'teamStatus', editable: true},
-      {title: '近期表现', width: '4.5em', dataIndex: 'pastStatus', editable: true}
+      {title: '近期表现', width: '4.5em', dataIndex: 'pastStatus', editable: true},
+      {
+        title: '操作',
+        dataIndex: 'oper',
+        width: '8em',
+        render: (text, record) => {
+          const editable = this.isEditing(record);
+          return (
+            <div>
+              {editable ? (
+                <span>
+                  <EditableContext.Consumer>
+                    {form => (
+                      <button
+                        onClick={() => this.save(form, record.id)}
+                        style={{marginRight: 8}}>保存</button>
+                    )}
+                  </EditableContext.Consumer>
+                  <Popconfirm title="确定取消?" cancelText="否" okText="是"
+                              onConfirm={() => this.cancel(record.key)}>
+                    <button>取消</button>
+                  </Popconfirm>
+                </span>
+              ) : (
+                <button onClick={() => this.edit(record.id)}>编辑</button>
+              )}
+            </div>
+          );
+        }
+      }
     ];
   }
 
   isEditing = (record) => {
-    return true;
+    return record.id === this.state.editingKey;
   };
 
   edit(id) {
     this.setState({editingKey: id});
   }
 
-  save() {
-    const {dataSource, onSaveClick} = this.props;
-    const promises = this.state.forms.map(form => {
-      return new Promise((resolve, reject) => {
-        form.validateFields((error, row) => {
-          if (error) {
-            return reject(error);
-          }
-          return resolve(row);
+  save(form, id) {
+    const {onSaveClick} = this.props;
+    form.validateFields((error, row) => {
+      if (error) {
+        message.error(error.message);
+      }
+      onSaveClick(row, id)
+        .then(() => {
+          this.setState({
+            editingKey: ''
+          });
         });
-      });
     });
-    Promise.all(promises)
-      .then(formData => {
-        return dataSource.map((item, idx) => ({
-          ...item,
-          ...formData[idx]
-        }));
-      })
-      .then(res => {
-        onSaveClick(res);
-      });
-
   }
 
   exportToExcel = () => {
@@ -338,6 +357,15 @@ class MatchList extends Component {
     ;
   };
 
+  cancel = () => {
+    this.setState({editingKey: ''});
+  };
+
+  dateChangeHandler = (date, dateStr) => {
+    this.setState({dateStr});
+    this.props.dateChangeHandler(dateStr);
+  };
+
   render() {
     const components = {
       body: {
@@ -389,20 +417,39 @@ class MatchList extends Component {
       <div className="dashboard">
         <div className="dashboard-body">
           <div className="d-header">
-            <span>比赛日期：{moment().format('YYYY-MM-DD')}</span>
+            {/*<span>选择联赛:</span>*/}
+            {/*<Select defaultValue="德甲" style={{width: 120, marginRight: '2em', marginLeft: '.5em'}}*/}
+            {/*onChange={this.props.selectLeague}>*/}
+            {/*<Option value="德甲">德甲</Option>*/}
+            {/*<Option value="意甲">意甲</Option>*/}
+            {/*<Option value="法甲">法甲</Option>*/}
+            {/*<Option value="英超">英超</Option>*/}
+            {/*<Option value="西甲">西甲</Option>*/}
+            {/*</Select>*/}
+            {/*<span>选择轮次:</span>*/}
+            {/*<Select defaultValue={1} style={{width: 100, marginRight: '2em', marginLeft: '.5em'}}*/}
+            {/*onChange={this.props.selectRound}>*/}
+            {/*{range(1, 38).map(*/}
+            {/*round => <Option value={round} key={round}>第{round}轮</Option>*/}
+            {/*)}*/}
+            {/*</Select>*/}
+            <span>选择比赛日期：</span>
+            <DatePicker locale={locale}
+                        defaultValue={moment()}
+                        onChange={this.dateChangeHandler}/>
           </div>
           <Table
             components={components}
             bordered
             dataSource={dataSource}
             columns={columns}
-            scroll={{x: 1700}}
+            scroll={{x: 1800}}
             size="small"
             pagination={false}
             rowClassName="editable-row"
-            rowKey="aicaiBetId"
+            rowKey="id"
           />
-          <Button className="btn-save" type="primary" onClick={() => this.save()}>保存</Button>
+          {/*<Button className="btn-save" type="primary" onClick={() => this.save()}>保存</Button>*/}
           <Button className="btn-export" type="primary" onClick={() => this.exportToExcel()}>导出到excel</Button>
         </div>
       </div>
@@ -410,4 +457,4 @@ class MatchList extends Component {
   }
 }
 
-export default connect(MatchList);
+export default connect(MatchHistoryList);

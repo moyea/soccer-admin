@@ -13,6 +13,7 @@ import Login from '../pages/login/Login';
 import Register from '../pages/login/Register';
 import PasswordReset from '../pages/login/PasswordReset';
 import MatchList from '../pages/match-list/MatchList';
+import MatchHistoryList from '../pages/match-list/MatchHistoryList';
 // import Widgets from "../pages/wIdgets/Widgets";
 // import Forms from "../pages/forms/Forms";
 // import Charts from "../pages/charts/Charts";
@@ -25,6 +26,7 @@ class RightContent extends Component {
       <Switch>
         <Route path="/dashboard" component={Dashboard}/>
         <Route path="/match-list" component={MatchList}/>
+        <Route path="/match-history-list" component={MatchHistoryList}/>
         {/*<Route path="/profile" component={Profile}/>*/}
         {/*<Route path="/search-result" component={SearchResult}/>*/}
         {/*<Route path="/faq" component={FAQ}/>*/}
