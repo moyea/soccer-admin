@@ -29,6 +29,9 @@ const baseData = {
   theoreticalWinRate: '',
   theoreticalDrawRate: '',
   theoreticalLoseRate: '',
+  winRateDiff: '',
+  drawRateDiff: '',
+  loseRateDiff: '',
   hostScore: '',
   awayScore: ''
 };
@@ -65,8 +68,10 @@ export default (WrappedComponent) => {
         theoreticalLoseOdds: getValidFloat(item.theoreticalLoseOdds),
         theoreticalWinRate: getValidFloat(item.theoreticalWinRate),
         theoreticalDrawRate: getValidFloat(item.theoreticalDrawRate),
-        theoreticalLoseRate: getValidFloat(item.theoreticalLoseRate)
-
+        theoreticalLoseRate: getValidFloat(item.theoreticalLoseRate),
+        winRateDiff: getValidFloat(item.winRateDiff),
+        drawRateDiff: getValidFloat(item.drawRateDiff),
+        loseRateDiff: getValidFloat(item.loseRateDiff)
       }));
       API.post('/match2/batch', newData)
         .then(() => {

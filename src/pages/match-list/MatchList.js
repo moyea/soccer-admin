@@ -15,13 +15,15 @@ import connect from './MatchList.service';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 
+import {Decimal} from 'decimal.js';
+
 const ExcelJS = require('exceljs/dist/es5/exceljs.browser');
 const FileSaver = require('file-saver');
 const workbook = new ExcelJS.Workbook();
 const sheet = workbook.addWorksheet('Sheet1');
-const cellIndexs = 'ABCDEFUVWXY';
+const cellIndexs = 'ABCDEFXYZ';
 const alignment = {vertical: 'middle', horizontal: 'center'};
-cellIndexs.split('').forEach((value, idx) => {
+cellIndexs.split('').concat(['AA', 'AB']).forEach((value, idx) => {
   sheet.mergeCells(`${value}1:${value}2`);
   // sheet.getCell(`${value}2`).alignment = alignment;
 });
@@ -33,11 +35,11 @@ const columnMapping = {
   'D2': '联赛',
   'E2': '主队',
   'F2': '客队',
-  'U2': '主队实力',
-  'V2': '客队实力',
-  'W2': '实力差值',
-  'X2': '本场表现',
-  'Y2': '近期表现'
+  'X2': '主队实力',
+  'Y2': '客队实力',
+  'Z2': '实力差值',
+  'AA2': '本场表现',
+  'AB2': '近期表现'
 };
 
 Object.keys(columnMapping).forEach(k => {
@@ -83,7 +85,11 @@ sheet.getCell('T1').value = '理论胜率';
 sheet.getCell('R2').value = '胜';
 sheet.getCell('S2').value = '平';
 sheet.getCell('T2').value = '负';
-
+sheet.mergeCells('U1:W1');
+sheet.getCell('W1').value = '胜率差';
+sheet.getCell('U2').value = '胜';
+sheet.getCell('V2').value = '平';
+sheet.getCell('W2').value = '负';
 
 moment.locale('zh-cn');
 
@@ -97,14 +103,68 @@ const EditableRow = ({form, index, ...props}) => (
   </EditableContext.Provider>
 );
 
-const EditableFormRow = Form.create()(EditableRow);
+const EditableFormRow = Form.create({})(EditableRow);
+
+const toDouble = value => (100 / (value || 1)).toFixed(2);
 
 class EditableCell extends React.Component {
-  getInput = () => {
+  getInput = (dataIndex, form, record) => {
     if (this.props.inputType === 'number') {
       return <InputNumber/>;
     }
-    return <Input/>;
+    return <Input onChange={(e) => this.handleInputChange(dataIndex, form, record, e)}/>;
+  };
+
+  handleInputChange(dataIndex, form, record, e) {
+    if (['hostStrength', 'awayStrength'].includes(dataIndex)) {
+      const targetValue = e.target.value;
+      let {hostStrength, awayStrength} = record;
+      // 取变化后的值
+      hostStrength = dataIndex === 'hostStrength' ? targetValue : hostStrength;
+      awayStrength = dataIndex === 'awayStrength' ? targetValue : awayStrength;
+      const strengthDiff = new Decimal(hostStrength || 0).minus(awayStrength || 0).toNumber();
+      form.setFieldsValue({strengthDiff});
+    }
+
+    if (['theoreticalWinRate', 'bet365WinRate'].includes(dataIndex)) {
+      const targetValue = e.target.value;
+      let {theoreticalWinRate, bet365WinRate} = record;
+      // 取变化后的值
+      theoreticalWinRate = dataIndex === 'theoreticalWinRate' ? targetValue : theoreticalWinRate;
+      bet365WinRate = dataIndex === 'bet365WinRate' ? targetValue : bet365WinRate;
+      const winRateDiff = new Decimal(theoreticalWinRate).minus(bet365WinRate).toNumber();
+      form.setFieldsValue({winRateDiff});
+    }
+    if (['theoreticalDrawRate', 'bet365DrawRate'].includes(dataIndex)) {
+      const targetValue = e.target.value;
+      let {theoreticalDrawRate, bet365DrawRate} = record;
+      // 取变化后的值
+      theoreticalDrawRate = dataIndex === 'theoreticalDrawRate' ? targetValue : theoreticalDrawRate;
+      bet365DrawRate = dataIndex === 'bet365DrawRate' ? targetValue : bet365DrawRate;
+      const drawRateDiff = new Decimal(theoreticalDrawRate).minus(bet365DrawRate).toNumber();
+      form.setFieldsValue({drawRateDiff});
+    }
+    if (['theoreticalLoseRate', 'bet365LoseRate'].includes(dataIndex)) {
+      const targetValue = e.target.value;
+      let {theoreticalLoseRate, bet365LoseRate} = record;
+      // 取变化后的值
+      theoreticalLoseRate = dataIndex === 'theoreticalLoseRate' ? targetValue : theoreticalLoseRate;
+      bet365LoseRate = dataIndex === 'bet365LoseRate' ? targetValue : bet365LoseRate;
+      const loseRateDiff = new Decimal(theoreticalLoseRate).minus(bet365LoseRate).toNumber();
+      form.setFieldsValue({loseRateDiff});
+    }
+    if ('theoreticalWinRate' === dataIndex) {
+      const targetValue = e.target.value;
+      form.setFieldsValue({theoreticalWinOdds: toDouble(targetValue)});
+    }
+    if ('theoreticalDrawRate' === dataIndex) {
+      const targetValue = e.target.value;
+      form.setFieldsValue({theoreticalDrawOdds: toDouble(targetValue)});
+    }
+    if ('theoreticalLoseRate' === dataIndex) {
+      const targetValue = e.target.value;
+      form.setFieldsValue({theoreticalLoseOdds: toDouble(targetValue)});
+    }
   };
 
   render() {
@@ -131,7 +191,7 @@ class EditableCell extends React.Component {
                     //   message: `请输入${title}!`
                     // }],
                     initialValue: record[dataIndex]
-                  })(this.getInput())}
+                  })(this.getInput(dataIndex, form, record))}
                 </FormItem>
               ) : restProps.children}
             </td>
@@ -234,6 +294,14 @@ class MatchList extends Component {
           {title: '负', width: '3.2em', dataIndex: 'theoreticalLoseRate', editable: true}
         ]
       },
+      {
+        title: '胜率差',
+        children: [
+          {title: '胜', width: '3.2em', dataIndex: 'winRateDiff', editable: true},
+          {title: '平', width: '3.2em', dataIndex: 'drawRateDiff', editable: true},
+          {title: '负', width: '3.2em', dataIndex: 'loseRateDiff', editable: true}
+        ]
+      },
       {title: '主队实力', width: '4.5em', dataIndex: 'hostStrength', editable: true},
       {title: '客队实力', width: '4.5em', dataIndex: 'awayStrength', editable: true},
       {title: '实力差值', width: '4.5em', dataIndex: 'strengthDiff', editable: true},
@@ -302,6 +370,9 @@ class MatchList extends Component {
         item.theoreticalWinRate,
         item.theoreticalDrawRate,
         item.theoreticalLoseRate,
+        item.winRateDiff,
+        item.drawRateDiff,
+        item.loseRateDiff,
         item.hostStrength,
         item.awayStrength,
         item.strengthDiff,

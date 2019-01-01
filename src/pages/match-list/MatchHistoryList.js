@@ -19,9 +19,9 @@ const ExcelJS = require('exceljs/dist/es5/exceljs.browser');
 const FileSaver = require('file-saver');
 const workbook = new ExcelJS.Workbook();
 const sheet = workbook.addWorksheet('Sheet1');
-const cellIndexs = 'ABCDEFUVWXY';
+const cellIndexs = 'ABCDEFXYZ';
 const alignment = {vertical: 'middle', horizontal: 'center'};
-cellIndexs.split('').forEach((value, idx) => {
+cellIndexs.split('').concat(['AA', 'AB']).forEach((value, idx) => {
   sheet.mergeCells(`${value}1:${value}2`);
   // sheet.getCell(`${value}2`).alignment = alignment;
 });
@@ -33,11 +33,11 @@ const columnMapping = {
   'D2': '联赛',
   'E2': '主队',
   'F2': '客队',
-  'U2': '主队实力',
-  'V2': '客队实力',
-  'W2': '实力差值',
-  'X2': '本场表现',
-  'Y2': '近期表现'
+  'X2': '主队实力',
+  'Y2': '客队实力',
+  'Z2': '实力差值',
+  'AA2': '本场表现',
+  'AB2': '近期表现'
 };
 
 Object.keys(columnMapping).forEach(k => {
@@ -83,6 +83,11 @@ sheet.getCell('T1').value = '理论胜率';
 sheet.getCell('R2').value = '胜';
 sheet.getCell('S2').value = '平';
 sheet.getCell('T2').value = '负';
+sheet.mergeCells('U1:W1');
+sheet.getCell('W1').value = '胜率差';
+sheet.getCell('U2').value = '胜';
+sheet.getCell('V2').value = '平';
+sheet.getCell('W2').value = '负';
 
 
 moment.locale('zh-cn');
@@ -234,6 +239,14 @@ class MatchHistoryList extends Component {
           {title: '负', width: '3.2em', dataIndex: 'theoreticalLoseRate', editable: true}
         ]
       },
+      {
+        title: '胜率差',
+        children: [
+          {title: '胜', width: '3.2em', dataIndex: 'winRateDiff', editable: true},
+          {title: '平', width: '3.2em', dataIndex: 'drawRateDiff', editable: true},
+          {title: '负', width: '3.2em', dataIndex: 'loseRateDiff', editable: true}
+        ]
+      },
       {title: '主队实力', width: '4.5em', dataIndex: 'hostStrength', editable: true},
       {title: '客队实力', width: '4.5em', dataIndex: 'awayStrength', editable: true},
       {title: '实力差值', width: '4.5em', dataIndex: 'strengthDiff', editable: true},
@@ -321,6 +334,9 @@ class MatchHistoryList extends Component {
         item.theoreticalWinRate,
         item.theoreticalDrawRate,
         item.theoreticalLoseRate,
+        item.winRateDiff,
+        item.drawRateDiff,
+        item.loseRateDiff,
         item.hostStrength,
         item.awayStrength,
         item.strengthDiff,
